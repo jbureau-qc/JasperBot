@@ -1,0 +1,14 @@
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\libhostpolicy.so
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\libhostfxr.so
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot.deps.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot.runtimeconfig.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot.runtimeconfig.dev.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot.dll
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Release\netcoreapp2.1\linux-x64\JasperBot.pdb
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.csprojAssemblyReference.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.csproj.CoreCompileInputs.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.AssemblyInfoInputs.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.AssemblyInfo.cs
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.dll
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Release\netcoreapp2.1\linux-x64\JasperBot.pdb

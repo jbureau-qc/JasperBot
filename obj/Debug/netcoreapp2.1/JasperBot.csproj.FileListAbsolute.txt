@@ -1,0 +1,11 @@
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Debug\netcoreapp2.1\JasperBot.deps.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Debug\netcoreapp2.1\JasperBot.runtimeconfig.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Debug\netcoreapp2.1\JasperBot.runtimeconfig.dev.json
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Debug\netcoreapp2.1\JasperBot.dll
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.csprojAssemblyReference.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.csproj.CoreCompileInputs.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.AssemblyInfoInputs.cache
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.AssemblyInfo.cs
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\bin\Debug\netcoreapp2.1\JasperBot.pdb
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.dll
+F:\CloudLife\Projects\C#\DiscordBot\JasperBot\JasperBot\obj\Debug\netcoreapp2.1\JasperBot.pdb
