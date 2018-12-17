@@ -18,6 +18,7 @@ namespace JasperBot
         private CommandService Commands;
         public static RestUserMessage Listing { get; set; }
         public static List<CraftingRequest> Requests = new List<CraftingRequest>();
+        public static int orderId = 0;
 
         static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
@@ -42,7 +43,6 @@ namespace JasperBot
             Client.Log += Client_Log;
             Client.ReactionAdded += onReactionAdded;
 
-            string Token = "";            
 
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
@@ -52,39 +52,51 @@ namespace JasperBot
 
         private async Task onReactionAdded(Cacheable<IUserMessage, ulong> cache, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            var request = Requests.Find(r => r.messageId == reaction.MessageId);
-            if (request != null)
+            var requests = Requests.FindAll(r => r.messageId == reaction.MessageId);
+            if (requests.Count > 0)
             {
-                if (reaction.Emote.Name == "⏲")
+                string items = "";
+                bool completedOrder = false;
+
+                foreach (var request in requests) { 
+                    if (reaction.Emote.Name == "⏲")
+                    {
+                        request.assignedCrafter = reaction.User.Value.Mention;
+                        request.status = OrderStatus.Assigned;                    
+                    } else if (reaction.Emote.Name == "✅")
+                    {
+                        if (request.assignedCrafter == "Unassigned")
+                            request.assignedCrafter = reaction.User.Value.Mention;
+                        request.status = OrderStatus.InProgress;                    
+                    } else if (reaction.Emote.Name == "📦")
+                    {
+                        if (request.assignedCrafter == "Unassigned")
+                            request.assignedCrafter = reaction.User.Value.Mention;
+                        request.status = OrderStatus.Ready;                    
+                    } else if (reaction.Emote.Name == "🛄")
+                    {
+                        if (request.assignedCrafter == "Unassigned")
+                            request.assignedCrafter = reaction.User.Value.Mention;
+                        request.status = OrderStatus.Completed;                    
+
+                         completedOrder = true;                
+                    }
+                    items += $"{request.quantity}x {request.itemName}{Environment.NewLine}";
+                }
+
+                if (completedOrder)
                 {
-                    request.assignedCrafter = reaction.User.Value.Username;
-                    request.status = OrderStatus.Assigned;                    
-                } else if (reaction.Emote.Name == "✅")
-                {
-                    if (request.assignedCrafter == "Unassigned")
-                        request.assignedCrafter = reaction.User.Value.Username;
-                    request.status = OrderStatus.InProgress;                    
-                } else if (reaction.Emote.Name == "📦")
-                {
-                    if (request.assignedCrafter == "Unassigned")
-                        request.assignedCrafter = reaction.User.Value.Username;
-                    request.status = OrderStatus.Ready;                    
-                } else if (reaction.Emote.Name == "🛄")
-                {
-                    if (request.assignedCrafter == "Unassigned")
-                        request.assignedCrafter = reaction.User.Value.Username;
-                    request.status = OrderStatus.Completed;                    
-                                        
-                    var archives = Client.GetChannel(524011068285255696) as SocketTextChannel;
-                    await archives.SendMessageAsync($"[{DateTime.Now.ToShortDateString()}] Requester: {request.Requester} | Crafter: {request.assignedCrafter} | {request.quantity}x {request.itemName}");
                     var message = await channel.GetMessageAsync(reaction.MessageId);
                     await message.DeleteAsync();
+
+                    Requests.RemoveAll(r => r.messageId == reaction.MessageId);
+
+                    var archives = Client.GetChannel(524011068285255696) as SocketTextChannel;
+                    await archives.SendMessageAsync($"[{DateTime.Now.ToShortDateString()}] Requester: {requests[0].Requester} | Crafter: {requests[0].assignedCrafter} {Environment.NewLine} {items}");
                 }
 
                 Utilities.UpdateListing(channel);
             }
-
-            //return Task.CompletedTask;
         }
 
         private async Task Client_Log(LogMessage message)

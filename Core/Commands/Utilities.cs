@@ -64,7 +64,7 @@ namespace JasperBot.Core.Commands
             description += Environment.NewLine;
             description += "For Alchemist orders you must donate the materials, due to the nature of making potions." + Environment.NewLine;
             description += Environment.NewLine;
-            description += "Please post in this format to keep orders filled in a neat and orderly fashion: \"!request @Alchemist I need 50 Health Potions\"" + Environment.NewLine;
+            description += "Please post in this format to keep orders filled in a neat and orderly fashion: \"!request @Alchemist I need 50 Health Potions\" (type !help for list of commands)" + Environment.NewLine;
             description += Environment.NewLine;
             description += "Order Progress" + Environment.NewLine;
             description += ":timer: = Your Order has been Read/Recieved by a Crafter" + Environment.NewLine;
@@ -127,14 +127,15 @@ namespace JasperBot.Core.Commands
                     cookingOrders += Utilities.FormatRequest(req);
             }
             cookingOrders = (cookingOrders == "" ? "None" : cookingOrders);
-
-            Embed.AddField("Current Blacksmith Orders", blacksmithOrders);
-            Embed.AddField("Current Tailor Orders", tailorOrders);
-            Embed.AddField("Current Scibe Orders", scribeOrders);
-            Embed.AddField("Current Carpentry Orders", carpentryOrders);
-            Embed.AddField("Current Tamer Orders", tamerOrders);
-            Embed.AddField("Current Alchemy Orders", alchemyOrders);
-            Embed.AddField("Current Cooking Orders", cookingOrders);
+            
+            //Page system instead of SafeLength
+            Embed.AddField("Current Blacksmith Orders", SafeLength(blacksmithOrders));
+            Embed.AddField("Current Tailor Orders", SafeLength(tailorOrders));
+            Embed.AddField("Current Scibe Orders", SafeLength(scribeOrders));
+            Embed.AddField("Current Carpentry Orders", SafeLength(carpentryOrders));
+            Embed.AddField("Current Tamer Orders", SafeLength(tamerOrders));
+            Embed.AddField("Current Alchemy Orders", SafeLength(alchemyOrders));
+            Embed.AddField("Current Cooking Orders", SafeLength(cookingOrders));
 
             Embed.WithFooter($"last updated {DateTime.Now}");
             if (Program.Listing == null)
@@ -169,6 +170,17 @@ namespace JasperBot.Core.Commands
             CleanChannel(channel);
         }
 
+        private static object SafeLength(string value)
+        {
+            string ret = value;
+
+            if (ret.Length > 1024)
+            {
+                ret = ret.Substring(0, 1020) + "...";
+            }
+            return ret;           
+        }
+
         public static async void DeleteCMD(ISocketMessageChannel channel)
         {
             try
@@ -200,7 +212,7 @@ namespace JasperBot.Core.Commands
                 }
                 
                 var local = item.CreatedAt.ToLocalTime().AddMinutes(5);
-                if (DateTime.Now > local && item.Author.Username != "Jasper")
+                if (DateTime.Now > local && Program.Requests.Find(r=>r.messageId ==  item.Id) == null)
                 {
                     await item.DeleteAsync();
                 }
