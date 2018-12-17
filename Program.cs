@@ -41,11 +41,9 @@ namespace JasperBot
             Client.Ready += Client_Ready;
             Client.Log += Client_Log;
             Client.ReactionAdded += onReactionAdded;
-<<<<<<< HEAD
+
             string Token = "";            
-=======
-            string Token = "NTIzODkyMjkzNTE4ODg0ODY0.DvgImw.3Ozvt3SqludiGZbPKbu1VAXWQME";            
->>>>>>> 6a33eba18d577a33ef556c4edd6368118fd58c1a
+
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
 
