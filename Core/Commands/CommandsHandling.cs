@@ -27,8 +27,8 @@ namespace JasperBot.Core.Commands
                 Program.orderId++;
 
                 Embed.WithColor(Color.Green);
-                Embed.WithTitle($"{Context.User.Username}'{(Context.User.Username.EndsWith("s") ? "" : "s")} order accepted");
-                Embed.WithAuthor(Context.User.Username, Context.User.GetAvatarUrl());
+                Embed.WithTitle($"Crafting Order [ID:{Program.orderId}]({DateTime.Now})");
+                //Embed.WithAuthor(Context.User.Username, Context.User.GetAvatarUrl());
                 string crafter = @params[0];
                 string quantity = @params[1];
                 int qty = 1;
@@ -37,19 +37,20 @@ namespace JasperBot.Core.Commands
                 List<string> itemList = new List<string>();
                 for (int i = 2; i < @params.Length; i++)
                 {
-                    itemList.Add(@params[i]);
+                    itemList.Add(@params[i].Replace("_"," "));
                     requests.Add(new CraftingRequest(Program.orderId, Utilities.RoleMapper(crafter), qty, @params[i], Context.User.Mention));
                 }
 
                 string itemListing = "";
                 foreach (string item in itemList)
-                    itemListing += $"{quantity}x {item}\n";
+                    itemListing += $"{quantity}x {item},";
 
-                Embed.AddField("Item Requested", itemListing);
-                Embed.AddField("Crafter Role", crafter);
+                Embed.AddInlineField("Crafter Role", crafter);
+                Embed.AddInlineField("Item Requested", itemListing);
+                Embed.AddInlineField("Requester", Context.User.Mention);
             }
 
-            Embed.WithFooter($"posted at {DateTime.Now}");
+            //Embed.WithFooter($"");
 
             Utilities.DeleteCMD(Context.Channel);
 
@@ -75,8 +76,10 @@ namespace JasperBot.Core.Commands
                 var requests = Program.Requests.FindAll(r => r.id == id);
                 foreach (var request in requests)
                 {
-                    request.status = OrderStatus.Assigned;
-                    request.assignedCrafter = Context.User.Mention;
+                    if (request.status == OrderStatus.Unassigned) { 
+                        request.status = OrderStatus.Assigned;
+                        request.assignedCrafter = Context.User.Mention;
+                    }
                 }
             }
 
@@ -91,8 +94,8 @@ namespace JasperBot.Core.Commands
             if (@params.Length == 2)
             {
                 string value = @params[1];
-
-                if (!"Start,Ready,Completed".Contains(value)) return;
+                List<string> values = new List<string>() { "Start", "Ready", "Complete"};
+                if (!values.Contains(value)) return;
 
                 int id = 0;
                 int.TryParse(@params[0], out id);
@@ -129,7 +132,7 @@ namespace JasperBot.Core.Commands
             Embed.WithDescription($"List of crafting requests & crafting orders");
             Embed.WithTitle($"Crafting Requests & Orders");
 
-            var requests = Program.Requests.FindAll(r => r.Requester == Context.User.Username);
+            var requests = Program.Requests.FindAll(r => r.Requester == Context.User.Mention);
             string res = "";
             foreach (var req in requests)
                 res += Utilities.FormatRequest(req);
@@ -139,7 +142,7 @@ namespace JasperBot.Core.Commands
             res = "";
             foreach (var req in requests)
                 res += Utilities.FormatRequest(req);
-            requests = Program.Requests.FindAll(r => r.assignedCrafter == Context.User.Username);
+            requests = Program.Requests.FindAll(r => r.assignedCrafter == Context.User.Mention);
             res = (res == "" ? "None" : res);
             Embed.AddField("Crafting Order to Complete", res);
 
@@ -151,10 +154,8 @@ namespace JasperBot.Core.Commands
         public async Task CancelCMD(params string[] @params)
         {
             Utilities.DeleteCMD(Context.Channel);
-
-            //TODO Post cancelled order?
-
-            if (@params.Length == 1)
+            
+            if (@params.Length > 0)
             {
                 int id = 0;
                 int.TryParse(@params[0], out id);
@@ -162,7 +163,13 @@ namespace JasperBot.Core.Commands
                 var requests = Program.Requests.FindAll(r => r.id == id);
                 foreach(var request in requests)
                 {
-                    if (request.Requester != Context.User.Mention)
+                    bool admin = false;
+                    if (@params.Length > 1)
+                    {
+                        if (@params[1] == "force")
+                            admin = true;
+                    }
+                    if (request.Requester != Context.User.Mention && !admin)
                         return;
                 }
 
@@ -258,16 +265,16 @@ namespace JasperBot.Core.Commands
 
             EmbedBuilder Embed = new EmbedBuilder();
             Embed.WithColor(Color.Green);
-            Embed.WithDescription($"List of available commands related to crafting requests, each commands must start with ! or tag Jasper");
+            Embed.WithDescription($"List of available commands related to crafting requests, each commands must start with ! or tag Jasper. Commands are handled only in the crafting-requests channel");
             Embed.WithTitle($"Jasper Crafting Requests Commands");
             Embed.AddField("!help", "List available commands");
-            Embed.AddField("!request", "Request crafting order, need to provide 3 or more arguments. Crafter role @ (example @Scribe), quantity, item1, item2, item3");
-            Embed.AddField("!take", "Take crafting request, need to provide request's id");
-            Embed.AddField("!update", "Update crafting order status, need to provide request's id and status. Available status; Start, Ready, Completed");
-            Embed.AddField("!cancel", "Cancel crafting request, need to provide request's id");
-            Embed.AddField("!meet", "Setup meeting with crafting request's requester, need to provide request's id and place to meet (surround with double quotes if you want to put spaces)");
-            Embed.AddField("!setrequester", "Update crafting request's requester, need to provide request's id and username");
-            Embed.AddField("!list", "List crafting requests/orders for current user");
+            Embed.AddField("!request", "Request crafting order, need to provide 3 or more arguments. Arguments are: crafterRole quantity item1 item2 etc... Example: !request @Scribe 1 Portal Mark Lightning");
+            Embed.AddField("!take", "Take crafting request, need to provide request's id. Request must be unassigned. Example: !take 3");
+            Embed.AddField("!update", "Update crafting order status, need to provide request's id and status. Available status; Start, Ready, Complete. Example: !update 2 Ready");
+            Embed.AddField("!cancel", "Cancel crafting request, need to provide request's id. You must be the one who created the order to cancel it.Example: !cancel 1");
+            Embed.AddField("!meet", "Setup meeting with crafting request's requester, need to provide request's id and place to meet (surround with double quotes if you want to put spaces). Example: !meet 4 \"Eldeir Bank\"");
+            Embed.AddField("!list", "List crafting requests/orders for current user. Example: !list");
+            //Embed.AddField("!setrequester", "Update crafting request's requester, need to provide request's id and username.");
             
             var u = Context.Message.Author;  
             await UserExtensions.SendMessageAsync(u, "", false, Embed.Build());

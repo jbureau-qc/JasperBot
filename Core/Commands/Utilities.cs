@@ -45,7 +45,7 @@ namespace JasperBot.Core.Commands
         public static string FormatRequest(CraftingRequest req, bool showCompleted = false)
         {
             if (req.status == OrderStatus.Completed && !showCompleted) return "";
-            return $"[{req.id}] {req.quantity}x {req.itemName} | Crafter: {req.assignedCrafter} | Status: {req.status} | Requester: {req.Requester} {Environment.NewLine}";
+            return $"[ID:{req.id}] {req.quantity}x {req.itemName} | Crafter: {req.assignedCrafter} | Status: {req.status} | Requester: {req.Requester} {Environment.NewLine}";
         }
 
         public static async void UpdateListing(ISocketMessageChannel channel)
@@ -57,16 +57,17 @@ namespace JasperBot.Core.Commands
             Embed.WithTitle(PostTitle);
 
             string description = "";
-            description += "Please @ the role (@Alchemist, @Blacksmith, @Carpenter, @Chef, @Fabricator, @Scribe, @Tamer) for the type of item you need and how many, after your order is filled the POST WILL BE DELETED BY THE CRAFTER filling the order. (Crafters will copy your post and paste it into a special channel to track fulfilled orders)" + Environment.NewLine;
-            description += "Instructions for pickup will be PMed to you. Thank you!" + Environment.NewLine;
+            description += "Please type !request @ the role (@Alchemist, @Blacksmith, @Carpenter, @Chef, @Fabricator, @Scribe, @Tamer) for the amount and type of item you need. A post will be created with your order and crafter will be able to assign the order to themselves. Once completed the orders will be deleted (History will be kept)" + Environment.NewLine;
+            description += "**Check basics-rules for full explanation.** *Instructions for pickup will be PMed to you. Thank you!*" + Environment.NewLine;
             description += Environment.NewLine;
             description += "If you are asking for a lot, or asking for high end/high tier gear then please be sure to donate the matierals or some similar equivalent materials (eg you can donate bars and ask for leather, etc.)" + Environment.NewLine;
             description += Environment.NewLine;
             description += "For Alchemist orders you must donate the materials, due to the nature of making potions." + Environment.NewLine;
             description += Environment.NewLine;
-            description += "Please post in this format to keep orders filled in a neat and orderly fashion: \"!request @Alchemist I need 50 Health Potions\" (type !help for list of commands)" + Environment.NewLine;
+            description += "**Please post in this format to keep orders filled in a neat and orderly fashion: !request @Alchemist 50 Health_Potion Stamina_Potion**" + Environment.NewLine;
+            description += "*Do not include anything other than the item name after the quantity. No please, emiticons or otherwise. (type !help for list of commands)*" + Environment.NewLine;
             description += Environment.NewLine;
-            description += "Order Progress" + Environment.NewLine;
+            description += "**Order Statuses**" + Environment.NewLine;
             description += ":timer: = Your Order has been Read/Recieved by a Crafter" + Environment.NewLine;
             description += ":white_check_mark: = The Crafter is working on your order now" + Environment.NewLine;
             description += ":package: = Your Order is complete and ready for Pickup." + Environment.NewLine;

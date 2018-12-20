@@ -81,6 +81,11 @@ namespace JasperBot
 
                          completedOrder = true;                
                     }
+                    else if (reaction.Emote.Name == "❌")
+                    {
+                        //TODO Delete Post 
+                        Requests.Remove(request);
+                    }
                     items += $"{request.quantity}x {request.itemName}{Environment.NewLine}";
                 }
 
@@ -92,7 +97,7 @@ namespace JasperBot
                     Requests.RemoveAll(r => r.messageId == reaction.MessageId);
 
                     var archives = Client.GetChannel(524011068285255696) as SocketTextChannel;
-                    await archives.SendMessageAsync($"[{DateTime.Now.ToShortDateString()}] Requester: {requests[0].Requester} | Crafter: {requests[0].assignedCrafter} {Environment.NewLine} {items}");
+                    await archives.SendMessageAsync($"[{DateTime.Now.ToShortDateString()}] OrderID: {requests[0].id} | Requester: {requests[0].Requester} | Crafter: {requests[0].assignedCrafter} {Environment.NewLine} {items}");
                 }
 
                 Utilities.UpdateListing(channel);
